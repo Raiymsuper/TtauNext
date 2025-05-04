@@ -7,12 +7,11 @@ from .views import (
     ApplicationViewSet,
 )
 
-router = DefaultRouter()
-router.register(r'applications', ApplicationViewSet, basename='application')
+
 
 urlpatterns = [
     path('clients/with-videos/', ClientWithVideoViewSet.as_view(), name='clients-with-videos'),
     path('clients/without-videos/', ClientWithoutVideoViewSet.as_view(), name='clients-without-videos'),
     path('videos/', VideoListView.as_view(), name='videos'),
-    path('', include(router.urls)),
+    path('applications/', ApplicationViewSet.as_view(), name='create-app'),
 ]

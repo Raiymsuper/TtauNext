@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'TtauNext.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Ttn',
-        'USER': 'beka',
-        'PASSWORD': 'Bekah123',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': 'fOxNnKvUcwAWeNpdFfYPPknrfFlDaAmD',
+        'HOST': 'hopper.proxy.rlwy.net',
+        'PORT': '37600',
     }
 }
 

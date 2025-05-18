@@ -18,6 +18,7 @@ class ClientWithoutVideoViewSet(APIView):
         serializer = ClientSerializer(clients, many=True)
         return Response(serializer.data)
 
+# Добавить в модельку бланк на играет и не играет
 class VideoListView(APIView):
     def get(self, request):
         videos = Video.objects.all()

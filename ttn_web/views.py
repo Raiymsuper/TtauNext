@@ -5,6 +5,30 @@ from rest_framework.views import APIView
 
 from .serializers import *
 
+from django.http import JsonResponse
+from minio import Minio
+from minio.error import S3Error
+import tempfile
+
+# Connect to MinIO
+minio_client = Minio(
+    "localhost:9000",
+    access_key="minioadmin",
+    secret_key="minioadmin",
+    secure=False
+)
+
+class VideoUploadView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = VideoUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            video = serializer.save()
+            return Response({
+                "id": video.id,
+                "title": video.title,
+                "minio_url": video.minio_url,
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClientWithVideoViewSet(APIView):
     def get(self, request):

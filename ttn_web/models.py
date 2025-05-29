@@ -18,12 +18,11 @@ class Application(models.Model):
 class Video(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
-    file = models.FileField(upload_to='videos/')
+    minio_url = models.URLField(blank=True)  # Store full URL here
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
-
 
 class Client(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

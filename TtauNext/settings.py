@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
+from minio import Minio
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'minio_storage',
 
     'ttn_web',
 ]
@@ -79,11 +82,11 @@ WSGI_APPLICATION = 'TtauNext.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'fOxNnKvUcwAWeNpdFfYPPknrfFlDaAmD',
-        'HOST': 'hopper.proxy.rlwy.net',
-        'PORT': '37600',
+        'NAME': 'ttn2',
+        'USER': 'beka',
+        'PASSWORD': 'Bekah123',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -122,10 +125,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+
 STATIC_URL = 'static/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# MINIO_STORAGE_ENDPOINT = "localhost:9000"
+# MINIO_STORAGE_ACCESS_KEY = "minioadmin"
+# MINIO_STORAGE_SECRET_KEY = "minioadmin"
+# MINIO_STORAGE_MEDIA_BUCKET_NAME = "videos"
+# MINIO_STORAGE_MEDIA_USE_HTTPS = False  # если не HTTPS
+# MINIO_STORAGE_MEDIA_AUTO_CREATE_MEDIA_BUCKET = True
+# MINIO_STORAGE_MEDIA_AUTO_CREATE_MEDIA_POLICY = True
+# MINIO_STORAGE_MEDIA_URL = "http://localhost:9000/videos/"
+
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

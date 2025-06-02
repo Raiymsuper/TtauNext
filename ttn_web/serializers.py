@@ -1,46 +1,53 @@
 from rest_framework import serializers
+
+from TtauNext import settings
 from .models import *
-import tempfile
-import os
 from minio import Minio
+
 
 class VideoUploadSerializer(serializers.Serializer):
     title = serializers.CharField(max_length=100)
     file = serializers.FileField()
 
     def create(self, validated_data):
-        # Инициализация MinIO клиента
-        client = Minio(
-            "localhost:9000",
-            access_key="minioadmin",
-            secret_key="minioadmin",
-            secure=False
-        )
-
         file_obj = validated_data['file']
         title = validated_data['title']
-        bucket_name = "videos"
+        bucket_name = settings.MINIO_MEDIA_BUCKET
 
-        # Создание бакета, если его нет
+        # Инициализация клиента MinIO
+        client = Minio(
+            settings.MINIO_ENDPOINT,
+            access_key=settings.MINIO_ACCESS_KEY,
+            secret_key=settings.MINIO_SECRET_KEY,
+            secure=settings.MINIO_USE_HTTPS
+        )
+
+        # Создание бакета при необходимости
         if not client.bucket_exists(bucket_name):
             client.make_bucket(bucket_name)
 
-        # Сохраняем временный файл
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            for chunk in file_obj.chunks():
-                tmp.write(chunk)
-            temp_path = tmp.name
+        # Загрузка файла напрямую из потока
+        client.put_object(
+            bucket_name,
+            file_obj.name,
+            file_obj,
+            length=file_obj.size,
+            content_type=file_obj.content_type
+        )
 
-        # Загрузка в MinIO
-        client.fput_object(bucket_name, file_obj.name, temp_path)
+        # Формирование ссылки (можно использовать публичную или временную)
+        if settings.MINIO_USE_HTTPS:
+            base_url = f"https://{settings.MINIO_ENDPOINT}"
+        else:
+            base_url = f"http://{settings.MINIO_ENDPOINT}"
 
-        # Удаляем временный файл
-        os.remove(temp_path)
+        # Вариант 1: прямая ссылка (если бакет публичен)
+        minio_url = f"{base_url}/{bucket_name}/{file_obj.name}"
 
-        # Формируем публичный URL
-        minio_url = f"http://localhost:9000/{bucket_name}/{file_obj.name}"
+        # Вариант 2: временная ссылка (если бакет закрыт)
+        # minio_url = client.presigned_get_object(bucket_name, file_obj.name, expires=timedelta(hours=1))
 
-        # Сохраняем объект в БД
+        # Сохраняем в базу
         return Video.objects.create(title=title, minio_url=minio_url)
 
 

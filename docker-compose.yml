@@ -1,0 +1,48 @@
+
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: ttn2
+      POSTGRES_USER: beka
+      POSTGRES_PASSWORD: Bekah123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app_net
+
+  minio:
+    image: minio/minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"  # API
+      - "9001:9001"  # Веб-консоль
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio_data:/data
+    networks:
+      - app_net
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - minio
+    networks:
+      - app_net
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
+  minio_data:
+
+networks:
+  app_net:

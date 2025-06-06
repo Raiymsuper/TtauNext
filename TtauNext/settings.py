@@ -22,11 +22,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'minio_storage',
+    'corsheaders',
     'ttn_web',
 ]
 
 # Middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -60,11 +63,11 @@ WSGI_APPLICATION = 'TtauNext.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='ttn2'),
-        'USER': config('DB_USER', default='beka'),
-        'PASSWORD': config('DB_PASSWORD', default='Bekah123'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
+        'PORT': config('DB_PORT'),
     }
 }
 
@@ -86,11 +89,25 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # MinIO (тоже через .env)
-MINIO_ENDPOINT = config('MINIO_ENDPOINT', default='localhost:9000')
-MINIO_ACCESS_KEY = config('MINIO_ACCESS_KEY', default='minioadmin')
-MINIO_SECRET_KEY = config('MINIO_SECRET_KEY', default='minioadmin')
-MINIO_USE_HTTPS = config('MINIO_USE_HTTPS', default=False, cast=bool)
-MINIO_MEDIA_BUCKET = config('MINIO_MEDIA_BUCKET', default='videos')
+MINIO_ENDPOINT = config('MINIO_ENDPOINT')
+MINIO_ACCESS_KEY = config('MINIO_ACCESS_KEY')
+MINIO_SECRET_KEY = config('MINIO_SECRET_KEY')
+MINIO_USE_HTTPS = config('MINIO_USE_HTTPS')
+MINIO_MEDIA_BUCKET = config('MINIO_MEDIA_BUCKET')
 
 # ID по умолчанию
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+CSRF_COOKIE_SAMESITE = 'Lax'  # или 'Strict' если у тебя полностью один домен
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+CORS_ALLOWED_ORIGINS = [
+    "https://frontend.example.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://frontend.example.com"
+]

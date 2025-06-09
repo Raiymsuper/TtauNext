@@ -109,5 +109,6 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://frontend.example.com"
+    "https://ttau-next.kz",
+    "https://www.ttau-next.kz",
 ]

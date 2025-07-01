@@ -98,14 +98,15 @@ MINIO_MEDIA_BUCKET = config('MINIO_MEDIA_BUCKET')
 # ID по умолчанию
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 CSRF_COOKIE_SAMESITE = 'Strict'  # или 'Strict' если у тебя полностью один домен
 SESSION_COOKIE_SAMESITE = 'Strict'
 
 CORS_ALLOWED_ORIGINS = [
-    "https://frontend.example.com",
+    "https://ttau-next.kz",
+    "https://www.ttau-next.kz",
 ]
 
 CSRF_TRUSTED_ORIGINS = [

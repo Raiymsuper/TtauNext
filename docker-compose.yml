@@ -46,7 +46,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./nginx/default.conf:/etc/nginx/nginx.conf:ro  # ← Now using nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro  # ← Now using nginx.conf
       - ./static:/static
       - ./media:/media
     depends_on:

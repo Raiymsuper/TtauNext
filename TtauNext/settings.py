@@ -105,11 +105,11 @@ CSRF_COOKIE_SAMESITE = 'Strict'  # или 'Strict' если у тебя полн
 SESSION_COOKIE_SAMESITE = 'Strict'
 
 CORS_ALLOWED_ORIGINS = [
-    "https://ttau-next.kz",
-    "https://www.ttau-next.kz",
+    "http://ttau-next.kz",
+    "http://www.ttau-next.kz",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://ttau-next.kz",
-    "https://www.ttau-next.kz",
+    "http://ttau-next.kz",
+    "http://www.ttau-next.kz",
 ]

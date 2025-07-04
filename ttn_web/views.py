@@ -22,12 +22,39 @@ class VideoUploadView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = VideoUploadSerializer(data=request.data)
         if serializer.is_valid():
-            video = serializer.save()
+            file_obj = request.FILES['file']
+            title = serializer.validated_data['title']
+            bucket_name = settings.MINIO_MEDIA_BUCKET
+
+            client = Minio(
+                settings.MINIO_ENDPOINT,
+                access_key=settings.MINIO_ACCESS_KEY,
+                secret_key=settings.MINIO_SECRET_KEY,
+                secure=settings.MINIO_USE_HTTPS
+            )
+
+            if not client.bucket_exists(bucket_name):
+                client.make_bucket(bucket_name)
+
+            client.put_object(
+                bucket_name,
+                file_obj.name,
+                file_obj,
+                length=file_obj.size,
+                content_type=file_obj.content_type
+            )
+
+            base_url = f"{'https' if settings.MINIO_USE_HTTPS else 'http'}://{settings.MINIO_ENDPOINT}"
+            minio_url = f"{base_url}/{bucket_name}/{file_obj.name}"
+
+            video = Video.objects.create(title=title, minio_url=minio_url)
+
             return Response({
                 "id": video.id,
                 "title": video.title,
                 "minio_url": video.minio_url,
             }, status=status.HTTP_201_CREATED)
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ClientWithVideoViewSet(APIView):
